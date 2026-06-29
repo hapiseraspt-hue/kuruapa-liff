@@ -1,328 +1,56 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="robots" content="noindex, nofollow">
-<title>くるアパ - 認証中</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>くるアパ 発注</title>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-html, body {
-  height: 100%;
-  font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans CJK JP", sans-serif;
-}
-
-body {
-  background: linear-gradient(135deg, #FFE5D9 0%, #FFF4E6 50%, #E0F4F1 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  color: #2a2a2a;
-}
-
-.container {
-  background: #ffffff;
-  width: 100%;
-  max-width: 420px;
-  border-radius: 24px;
-  padding: 48px 32px;
-  box-shadow: 0 10px 40px rgba(245, 138, 143, 0.18);
-  position: relative;
-  overflow: hidden;
-  text-align: center;
-}
-
-.container::before {
-  content: '';
-  position: absolute;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: rgba(245, 138, 143, 0.08);
-  top: -60px;
-  right: -60px;
-}
-
-.container::after {
-  content: '';
-  position: absolute;
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  background: rgba(91, 201, 181, 0.08);
-  bottom: -40px;
-  left: -40px;
-}
-
-.icon-circle {
-  width: 88px;
-  height: 88px;
-  background: linear-gradient(135deg, #F58A8F 0%, #FFA39C 100%);
-  border-radius: 50%;
-  margin: 0 auto 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 6px 20px rgba(245, 138, 143, 0.35);
-  position: relative;
-  z-index: 2;
-}
-
-.icon-circle svg {
-  width: 44px;
-  height: 44px;
-  stroke: #ffffff;
-  stroke-width: 2.5;
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.brand {
-  font-size: 14px;
-  color: #F58A8F;
-  font-weight: 700;
-  letter-spacing: 2px;
-  margin-bottom: 8px;
-  position: relative;
-  z-index: 2;
-}
-
-.title {
-  font-size: 22px;
-  font-weight: 800;
-  color: #1a1a1a;
-  margin-bottom: 12px;
-  position: relative;
-  z-index: 2;
-}
-
-.message {
-  font-size: 14px;
-  color: #6b7280;
-  line-height: 1.7;
-  margin-bottom: 28px;
-  position: relative;
-  z-index: 2;
-}
-
-.spinner {
-  width: 48px;
-  height: 48px;
-  border: 4px solid rgba(245, 138, 143, 0.15);
-  border-top-color: #F58A8F;
-  border-radius: 50%;
-  animation: spin 0.9s linear infinite;
-  margin: 0 auto;
-  position: relative;
-  z-index: 2;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.error-state {
-  display: none;
-}
-
-.error-state.show {
-  display: block;
-}
-
-.success-state.hidden {
-  display: none;
-}
-
-.error-icon {
-  width: 88px;
-  height: 88px;
-  background: linear-gradient(135deg, #EF4444 0%, #F87171 100%);
-  border-radius: 50%;
-  margin: 0 auto 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.35);
-  position: relative;
-  z-index: 2;
-}
-
-.error-icon svg {
-  width: 44px;
-  height: 44px;
-  stroke: #ffffff;
-  stroke-width: 3;
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.error-detail {
-  background: #FEE2E2;
-  border: 2px solid #FCA5A5;
-  border-radius: 12px;
-  padding: 14px;
-  margin-top: 16px;
-  color: #991B1B;
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.6;
-  position: relative;
-  z-index: 2;
-  text-align: left;
-  white-space: pre-wrap;
-}
-
-.footer {
-  margin-top: 24px;
-  font-size: 11px;
-  color: #9CA3AF;
-  letter-spacing: 1px;
-  position: relative;
-  z-index: 2;
-}
+  body{font-family:-apple-system,"Helvetica Neue",sans-serif;background:#f5f5f3;color:#1d1d1b;margin:0}
+  .box{max-width:420px;margin:60px auto;padding:24px;text-align:center}
+  .msg{font-size:15px;color:#555}
+  .err{font-size:15px;color:#a32d2d}
 </style>
 </head>
 <body>
-<div class="container">
-
-  <!-- 認証中表示 -->
-  <div id="loadingState" class="success-state">
-    <div class="icon-circle">
-      <svg viewBox="0 0 24 24">
-        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-        <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-        <line x1="12" y1="22.08" x2="12" y2="12"/>
-      </svg>
-    </div>
-    <div class="brand">KURUAPA</div>
-    <h1 class="title">認証中...</h1>
-    <p class="message">
-      お待ちください。<br>
-      まもなく発注フォームへ遷移します。
-    </p>
-    <div class="spinner"></div>
-  </div>
-
-  <!-- エラー表示 -->
-  <div id="errorState" class="error-state">
-    <div class="error-icon">
-      <svg viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="10"/>
-        <line x1="12" y1="8" x2="12" y2="12"/>
-        <line x1="12" y1="16" x2="12.01" y2="16"/>
-      </svg>
-    </div>
-    <div class="brand">KURUAPA</div>
-    <h1 class="title">認証エラー</h1>
-    <p class="message" id="errorMessage">
-      申し訳ございません。<br>
-      認証に失敗しました。
-    </p>
-    <div class="error-detail" id="errorDetail" style="display:none;"></div>
-  </div>
-
-  <div class="footer">KURUAPA by HAPPYCELLER</div>
-
+<div class="box">
+  <div id="msg" class="msg">LINEで本人確認中…</div>
 </div>
 
-<!-- LIFF SDK -->
-<script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<!-- ▼設定値（変更が必要なのはこの2つだけ） -->
 <script>
-// ============================================================
-// 設定(ここを編集する)
-// ============================================================
+  // LIFF ID（既存のものなので通常そのまま）
+  var LIFF_ID = "2010259050-0aPwjKfu";
+  // 今日の発注アプリ（GAS）のURL。/exec まで。
+  var GAS_URL = "https://script.google.com/macros/s/AKfycbzNuO4C5hRess3-HXk12guWH36LOGy0VyvQ-njYNhu_-iJ2i9Xfie5alKuZ56F2VX3b/exec";
+</script>
+<!-- ▲設定値ここまで -->
 
-// LINE LIFF ID(LINE Developersで取得)
-const LIFF_ID = '2010259050-0aPwjKfu';
+<script>
+  function showErr(m){ document.getElementById("msg").className = "err"; document.getElementById("msg").innerHTML = m; }
 
-// GAS Webアプリ(発注ゲートウェイ v2)のURL
-// ※GAS改修後、ここを更新してください
-const GAS_GATEWAY_URL = 'https://script.google.com/macros/s/AKfycbzdkDy6fM54mIWbS8EQky1Skpei4cLPWC762uAQKPcP_m3R9BFx8vYl-bzB4ptHdT3r/exec';
-
-// ============================================================
-// メイン処理
-// ============================================================
-
-async function main() {
-  try {
-    // LIFF SDKを初期化
-    await liff.init({ liffId: LIFF_ID });
-
-    // LINE内ブラウザで開かれているか確認
-    if (!liff.isInClient()) {
-      showError(
-        'LINEアプリから開いてください',
-        'このページはLINEアプリ内でのみ動作します。\n' +
-        'くるアパ公式LINEのリッチメニューから\n' +
-        '「発注・交換」をタップしてください。'
-      );
-      return;
-    }
-
-    // ユーザーがログインしていない場合はログインを促す
-    if (!liff.isLoggedIn()) {
-      liff.login();
-      return;
-    }
-
-    // LINE プロフィール取得
-    const profile = await liff.getProfile();
-    const userId = profile.userId;
-
-    if (!userId) {
-      showError(
-        '認証情報を取得できませんでした',
-        'LINEプロフィールの取得に失敗しました。\n' +
-        'LINEアプリを再起動して、もう一度お試しください。'
-      );
-      return;
-    }
-
-    // GASゲートウェイへリダイレクト(userIdをクエリパラメータで渡す)
-    const redirectUrl = GAS_GATEWAY_URL + '?uid=' + encodeURIComponent(userId);
-    window.location.href = redirectUrl;
-
-  } catch (error) {
-    console.error('LIFF認証エラー:', error);
-    showError(
-      'システムエラーが発生しました',
-      '時間をおいて再度お試しください。\n\n' +
-      'エラー詳細: ' + (error.message || error.toString())
-    );
+  function go(uid){
+    // userId はURLに載せず、POSTの本文で渡す（プライバシー配慮）
+    var f = document.createElement("form");
+    f.method = "POST";
+    f.action = GAS_URL;
+    var i = document.createElement("input");
+    i.type = "hidden"; i.name = "uid"; i.value = uid;
+    f.appendChild(i);
+    document.body.appendChild(f);
+    f.submit();
   }
-}
 
-// ============================================================
-// エラー表示
-// ============================================================
-
-function showError(title, detail) {
-  document.getElementById('loadingState').classList.add('hidden');
-  const errorState = document.getElementById('errorState');
-  errorState.classList.add('show');
-
-  const errorMessage = document.getElementById('errorMessage');
-  errorMessage.innerHTML = title;
-
-  if (detail) {
-    const errorDetail = document.getElementById('errorDetail');
-    errorDetail.textContent = detail;
-    errorDetail.style.display = 'block';
+  if (typeof liff === "undefined") {
+    showErr("読み込みに失敗しました。LINEアプリから開いてください。");
+  } else {
+    liff.init({ liffId: LIFF_ID }).then(function () {
+      if (!liff.isLoggedIn()) { liff.login(); return; }
+      return liff.getProfile().then(function (p) { go(p.userId); });
+    }).catch(function (err) {
+      showErr("LINEアプリから開いてください。（" + err + "）");
+    });
   }
-}
-
-// ページ読み込み時に実行
-window.addEventListener('load', main);
 </script>
 </body>
 </html>
