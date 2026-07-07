@@ -17,26 +17,24 @@
   <div id="msg" class="msg">LINEで本人確認中…</div>
 </div>
 
-<!-- ▼設定値（変更が必要なのはこの2つだけ） -->
 <script>
-  // LIFF ID（既存のものなので通常そのまま）
   var LIFF_ID = "2010259050-0aPwjKfu";
-  // 今日の発注アプリ（GAS）のURL。/exec まで。
   var GAS_URL = "https://script.google.com/macros/s/AKfycbzNuO4C5hRess3-HXk12guWH36LOGy0VyvQ-njYNhu_-iJ2i9Xfie5alKuZ56F2VX3b/exec";
 </script>
-<!-- ▲設定値ここまで -->
 
 <script>
   function showErr(m){ document.getElementById("msg").className = "err"; document.getElementById("msg").innerHTML = m; }
 
-  function go(uid){
-    // userId はURLに載せず、POSTの本文で渡す（プライバシー配慮）
+  function go(uid, dname){
     var f = document.createElement("form");
     f.method = "POST";
     f.action = GAS_URL;
     var i = document.createElement("input");
     i.type = "hidden"; i.name = "uid"; i.value = uid;
     f.appendChild(i);
+    var i2 = document.createElement("input");
+    i2.type = "hidden"; i2.name = "dname"; i2.value = (dname || "");
+    f.appendChild(i2);
     document.body.appendChild(f);
     f.submit();
   }
@@ -46,7 +44,7 @@
   } else {
     liff.init({ liffId: LIFF_ID }).then(function () {
       if (!liff.isLoggedIn()) { liff.login(); return; }
-      return liff.getProfile().then(function (p) { go(p.userId); });
+      return liff.getProfile().then(function (p) { go(p.userId, p.displayName); });
     }).catch(function (err) {
       showErr("LINEアプリから開いてください。（" + err + "）");
     });
