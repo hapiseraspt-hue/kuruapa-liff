@@ -25,6 +25,21 @@
 <script>
   function showErr(m){ document.getElementById("msg").className = "err"; document.getElementById("msg").innerHTML = m; }
 
+  // リッチメニューの枠ごとに行き先を変えられるようにする。
+  // 例: https://liff.line.me/2010259050-0aPwjKfu?to=share → 販売実績の投稿画面
+  //     to を付けなければ、これまでどおり発注画面。
+  function destPage(){
+    var re = /[?&]to=([A-Za-z0-9_-]{1,20})/;
+    var m = location.search.match(re);
+    if (m) return m[1];
+    // 初回起動時は LIFF が ?liff.state=%3Fto%3Dshare の形で包んでくることがある
+    var st = location.search.match(/[?&]liff\.state=([^&]+)/);
+    if (st) {
+      try { var m2 = decodeURIComponent(st[1]).match(re); if (m2) return m2[1]; } catch (e) {}
+    }
+    return "";
+  }
+
   function go(uid, dname){
     var f = document.createElement("form");
     f.method = "POST";
@@ -32,6 +47,12 @@
     var i = document.createElement("input");
     i.type = "hidden"; i.name = "uid"; i.value = uid;
     f.appendChild(i);
+    var to = destPage();
+    if (to) {
+      var i3 = document.createElement("input");
+      i3.type = "hidden"; i3.name = "page"; i3.value = to;
+      f.appendChild(i3);
+    }
     var i2 = document.createElement("input");
     i2.type = "hidden"; i2.name = "dname"; i2.value = (dname || "");
     f.appendChild(i2);
